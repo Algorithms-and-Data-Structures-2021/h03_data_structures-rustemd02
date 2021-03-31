@@ -7,39 +7,53 @@
 namespace itis {
 
 ArrayStack::ArrayStack(int capacity) {
-  if (capacity <= 0) {
-    throw std::invalid_argument("initial capacity must be greater than zero");
-  }
+        if (capacity <= 0) {
+            throw std::invalid_argument("initial capacity must be greater than zero");
+        }
+        data_ = new Element[capacity];
+        capacity_ = capacity;
+        size_ = 0;
+        std::fill(data_, data_ + capacity, Element::UNDEFINED);
+    }
 
-  // TODO: напишите здесь свой код ...
-}
+    ArrayStack::~ArrayStack() {
+        delete[] data_;
+        capacity_ = 0;
+        size_ = 0;
+    }
 
-ArrayStack::~ArrayStack() {
-  // TODO: напишите здесь свой код ...
-}
+    void ArrayStack::Push(Element e) {
+        if (capacity_ == size_) {
+            resize(capacity_ + kCapacityGrowthCoefficient);
+        }
+        data_[size_] = e;
+        size_++;
+    }
 
-void ArrayStack::Push(Element e) {
-  // TODO: напишите здесь свой код ...
-}
+    void ArrayStack::Pop() {
+        if (size_ == 0) {
+            throw std::logic_error("cannot pop out from empty stack");
+        }
+        data_[size_ - 1] = Element::UNDEFINED;
+        size_--;
+    }
 
-void ArrayStack::Pop() {
-  if (size_ == 0) {
-    throw std::logic_error("cannot pop out from empty stack");
-  }
+    void ArrayStack::Clear() {
+        delete[] data_;
+        data_ = new Element[capacity_];
+        std::fill(data_, data_ + capacity_, Element::UNDEFINED);
+        size_ = 0;
+    }
 
-  // TODO: напишите здесь свой код ...
-}
-
-void ArrayStack::Clear() {
-  // TODO: напишите здесь свой код ...
-}
-
-void ArrayStack::resize(int new_capacity) {
-  assert(new_capacity > size_);
-
-  // TODO: напишите здесь свой код ...
-}
-
+    void ArrayStack::resize(int new_capacity) {
+        assert(new_capacity > size_);
+        auto *newData = new Element[new_capacity];
+        std::fill(newData, newData + new_capacity, Element::UNDEFINED);
+        std::copy(data_, data_ + size_, newData);
+        delete[] data_;
+        data_ = newData;
+        capacity_ = new_capacity;
+    }
 // === РЕАЛИЗОВАНО ===
 
 std::optional<Element> ArrayStack::Peek() const {
